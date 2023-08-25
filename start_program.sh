@@ -1,10 +1,23 @@
-python3 koboldcpp.py  \
---model ggml-model-q4_0.bin \
---launch \
---threads 6 \
---contextsize 2048 \
---stream \
---smartcontext \
---usemirostat 2 0.5 0.1 \
---usemlock \
---debugmode 
+#!/bin/bash
+
+# KoboldCPP Docker Start Script
+echo "========================================"
+echo "KoboldCPP Containerized"
+echo "By Pornpipat Popum <cappy@fyralabs.com>"
+echo "========================================"
+
+# check if CONFIG_FILE is set, if yes then load using --config
+
+if [ -n "$CONFIG_FILE" ]; then
+    CARGS+=" --config $CONFIG_FILE"
+# else check the ARGS environment variable
+elif [ -n "$ARGS" ]; then
+    CARGS+=" $ARGS"
+fi
+
+
+# now start the program
+nvidia-smi
+echo "CARGS: $CARGS"
+
+./koboldcpp.py $CARGS

@@ -1,0 +1,3 @@
+[submodule "koboldcpp"]
+	path = koboldcpp
+	url = https://github.com/LostRuins/koboldcpp.git

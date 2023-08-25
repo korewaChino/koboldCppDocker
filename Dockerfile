@@ -1,29 +1,40 @@
-FROM ubuntu:latest
+FROM nvidia/cuda:12.2.0-devel-rockylinux9
 
-RUN apt-get update && apt-get install -y \
-    sudo
+RUN dnf makecache
 
-RUN sudo apt install -y python3-pip 
-RUN yes | sudo apt install gfortran 
-RUN yes | sudo apt install gcc 
-RUN yes | sudo apt install git 
+RUN dnf install -y yum-utils sudo
+RUN dnf config-manager --set-enabled crb
+RUN dnf install -y epel-release
+
+RUN dnf makecache -y -v
+
+RUN dnf install -y gcc \
+    gcc-c++ \
+    python3 python3-devel \
+    python3-pip \
+    make \
+    cmake \
+    git \
+    wget \
+    unzip \
+    openblas-devel \
+    clblast-devel
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install psutil
+RUN mkdir ./home/koboldcpp
+COPY ./koboldcpp ./home/koboldcpp
 
-RUN mkdir ./home/koboldcpp_dir
-COPY ./koboldcpp_dir ./home/koboldcpp_dir
-
-WORKDIR /home/koboldcpp_dir
-RUN make
-
-COPY ./models /home/koboldcpp_dir
-
+WORKDIR /home/koboldcpp
+# You need this environment variable to make sure that the CUDA architecture works for all GPUs
+ENV CUDA_DOCKER_ARCH=all
+RUN make LLAMA_OPENBLAS=1 LLAMA_CUBLAS=1 LLAMA_CLBLAST=1 -j$(nproc)
 
 WORKDIR /
-COPY start_program.sh /home/koboldcpp_dir
+COPY start_program.sh /home/koboldcpp
 
-WORKDIR /home/koboldcpp_dir
+WORKDIR /home/koboldcpp
 RUN chmod 555 start_program.sh
 
 EXPOSE 5001

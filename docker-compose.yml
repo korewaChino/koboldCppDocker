@@ -1,13 +1,30 @@
 version: "1"
 
 services:
-  server-container:
-    image: koboldimage
-    container_name: koboldcontainer
-    working_dir: /home/koboldcpp_dir
+  koboldcpp:
+    restart: unless-stopped
+    ulimits:
+      memlock: -1
+    mem_limit: 10gb
+    tty: true
+    privileged: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    image: korewachino/koboldcpp
+    container_name: koboldcpp
+    working_dir: /home/koboldcpp
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "5001:5001"
-
+    volumes:
+      - "/home/cappy/Documents/ai_workspace/koboldcpp/models:/models"
+      - "$PWD/config:/config"
+    env_file:
+      - .env

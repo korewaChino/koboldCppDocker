@@ -1,3 +1,5 @@
 .DS_Store
-models/ggml-model-q4_0_13b.bin
-models/ggml-model-q4_0.bin
+models/*.bin
+models/*.gg*
+config/*
+/.env

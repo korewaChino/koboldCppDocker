@@ -16,7 +16,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   python3 \
   libopenblas-dev \
   libclblast-dev \
-  libcublas-dev-12-2 \
   opencl-headers \
   python3-pip && \
   apt-get clean && \

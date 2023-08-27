@@ -46,5 +46,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
+          file: nocuda.dockerfile
           push: true
           tags: korewachino/koboldcpp:nocuda-latest,korewachino/koboldcpp:1.42-nocuda

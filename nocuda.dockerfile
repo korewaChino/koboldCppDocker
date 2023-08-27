@@ -28,6 +28,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
   python3-pip \
   opencl-headers \
   libclc-dev \
+  libopencl-clang-dev \
+  ocl-icd-opencl-dev \
   opencl-clhpp-headers \
   opencl-c-headers \
   rocm-dev && \
@@ -41,7 +43,7 @@ RUN mkdir ./home/koboldcpp
 COPY ./koboldcpp ./home/koboldcpp
 
 WORKDIR /home/koboldcpp
-RUN make LLAMA_OPENBLAS=1 -j$(nproc)
+RUN make LLAMA_OPENBLAS=1 LLAMA_CLBLAST=1 -j$(nproc)
 
 WORKDIR /
 COPY start_program.sh /home/koboldcpp

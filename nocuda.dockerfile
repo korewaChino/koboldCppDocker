@@ -8,9 +8,9 @@ ARG AMDGPU_VERSION=5.3
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common && \
   curl -sL http://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - && \
   sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/$ROCM_VERSION/ focal main > /etc/apt/sources.list.d/rocm.list' && \
-  sh -c 'echo deb [arch=amd64] https://repo.radeon.com/amdgpu/$AMDGPU_VERSION/ubuntu focal main > /etc/apt/sources.list.d/amdgpu.list' && \
-  add-apt-repository ppa:cnugteren/clblast -y && \
-  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  sh -c 'echo deb [arch=amd64] https://repo.radeon.com/amdgpu/$AMDGPU_VERSION/ubuntu focal main > /etc/apt/sources.list.d/amdgpu.list'
+RUN add-apt-repository -y ppa:cnugteren/clblast -y && apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   sudo \
   libelf1 \
   libnuma-dev \

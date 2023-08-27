@@ -1,9 +1,9 @@
 FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common && \
-  add-apt-repository ppa:cnugteren/clblast -y && \
-  apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common 
+RUN add-apt-repository -y ppa:cnugteren/clblast && apt-get update
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   sudo \
   libelf1 \
   libnuma-dev \

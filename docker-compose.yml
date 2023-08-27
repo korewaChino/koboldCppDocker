@@ -3,6 +3,7 @@ version: "1"
 services:
   koboldcpp:
     restart: unless-stopped
+    # runtime: nvidia
     ulimits:
       memlock: -1
     mem_limit: 10gb
@@ -20,7 +21,8 @@ services:
     working_dir: /home/koboldcpp
     build:
       context: .
-      dockerfile: Dockerfile
+      # dockerfile: Dockerfile
+      dockerfile: nocuda.dockerfile
     ports:
       - "5001:5001"
     volumes:

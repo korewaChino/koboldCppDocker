@@ -1,9 +1,16 @@
-FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
+FROM ubuntu:20.04
+
+# Initialize the image
+# Modify to pre-install dev tools and ROCm packages
+ARG ROCM_VERSION=5.3
+ARG AMDGPU_VERSION=5.3
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common && \
+  curl -sL http://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - && \
+  sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/$ROCM_VERSION/ focal main > /etc/apt/sources.list.d/rocm.list' && \
+  sh -c 'echo deb [arch=amd64] https://repo.radeon.com/amdgpu/$AMDGPU_VERSION/ubuntu focal main > /etc/apt/sources.list.d/amdgpu.list' && \
   add-apt-repository ppa:cnugteren/clblast -y && \
-  apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   sudo \
   libelf1 \
   libnuma-dev \
@@ -15,10 +22,15 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
   file \
   python3 \
   libopenblas-dev \
+  rocblas-dev \
   libclblast-dev \
-  libcublas-dev \
+  hipblas-dev \
+  python3-pip \
   opencl-headers \
-  python3-pip && \
+  libclc-dev \
+  opencl-clhpp-headers \
+  opencl-c-headers \
+  rocm-dev && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
@@ -29,9 +41,7 @@ RUN mkdir ./home/koboldcpp
 COPY ./koboldcpp ./home/koboldcpp
 
 WORKDIR /home/koboldcpp
-# You need this environment variable to make sure that the CUDA architecture works for all GPUs
-ENV CUDA_DOCKER_ARCH=all
-RUN make LLAMA_OPENBLAS=1 LLAMA_CUBLAS=1 LLAMA_CLBLAST=1 -j$(nproc)
+RUN make LLAMA_OPENBLAS=1 -j$(nproc)
 
 WORKDIR /
 COPY start_program.sh /home/koboldcpp
@@ -39,8 +49,5 @@ COPY start_program.sh /home/koboldcpp
 WORKDIR /home/koboldcpp
 RUN chmod 555 start_program.sh
 
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 EXPOSE 5001
 CMD "./start_program.sh"
-

@@ -15,6 +15,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   file \
   python3 \
   libopenblas-dev \
+  opencl-headers \
+  libclc-dev \
+  libopencl-clang-dev \
+  ocl-icd-opencl-dev \
+  opencl-clhpp-headers \
+  opencl-c-headers \
   libclblast-dev \
   opencl-headers \
   python3-pip && \

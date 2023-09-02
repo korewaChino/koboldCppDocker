@@ -21,7 +21,7 @@ services:
     working_dir: /home/koboldcpp
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: nocuda.dockerfile
       # dockerfile: nocuda.dockerfile
     ports:
       - "5001:5001"

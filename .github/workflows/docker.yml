@@ -26,7 +26,10 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: korewachino/koboldcpp:latest,korewachino/koboldcpp:1.41,korewachino/koboldcpp:cuda
+          tags: |
+           korewachino/koboldcpp:latest
+           korewachino/koboldcpp:1.42.1
+           korewachino/koboldcpp:cuda
   docker-nocuda:
     runs-on: ubuntu-latest
     steps:
@@ -48,4 +51,7 @@ jobs:
         with:
           file: nocuda.dockerfile
           push: true
-          tags: korewachino/koboldcpp:nocuda,korewachino/koboldcpp:1.41-nocuda
+          tags: |
+           korewachino/koboldcpp:nocuda
+           korewachino/koboldcpp:1.42.1-rocm
+           korewachino/koboldcpp:1.42.1-nocuda

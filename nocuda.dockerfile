@@ -1,16 +1,32 @@
-FROM ubuntu:20.04
+ARG UBUNTU_VERSION=22.04
 
-# Initialize the image
-# Modify to pre-install dev tools and ROCm packages
-ARG ROCM_VERSION=5.3
-ARG AMDGPU_VERSION=5.3
+# This needs to generally match the container host's environment.
+ARG ROCM_VERSION=5.6
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common && \
-  curl -sL http://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - && \
-  sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/$ROCM_VERSION/ focal main > /etc/apt/sources.list.d/rocm.list' && \
-  sh -c 'echo deb [arch=amd64] https://repo.radeon.com/amdgpu/$AMDGPU_VERSION/ubuntu focal main > /etc/apt/sources.list.d/amdgpu.list'
+# Target the CUDA build image
+ARG BASE_ROCM_DEV_CONTAINER=rocm/dev-ubuntu-${UBUNTU_VERSION}:${ROCM_VERSION}-complete
+
+# Unless otherwise specified, we make a fat build.
+# List from https://github.com/ggerganov/llama.cpp/pull/1087#issuecomment-1682807878
+# This is mostly tied to rocBLAS supported archs.
+ARG ROCM_DOCKER_ARCH=\
+  gfx803 \
+  gfx900 \
+  gfx906 \
+  gfx908 \
+  gfx90a \
+  gfx1010 \
+  gfx1030 \
+  gfx1100 \
+  gfx1101 \
+  gfx1102
+
+
+FROM ${BASE_ROCM_DEV_CONTAINER}
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common
 RUN add-apt-repository -y ppa:cnugteren/clblast -y && apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
   sudo \
   libelf1 \
   libnuma-dev \
@@ -36,14 +52,20 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
 RUN pip install psutil
 RUN mkdir ./home/koboldcpp
 COPY ./koboldcpp ./home/koboldcpp
 
 WORKDIR /home/koboldcpp
-RUN make LLAMA_OPENBLAS=1 LLAMA_CLBLAST=1 -j$(nproc)
+RUN pip install -r requirements.txt
+
+ENV LLAMA_OPENBLAS=1
+ENV LLAMA_CLBLAST=1
+ENV LLAMA_HIPBLAS=1
+ENV CC=/opt/rocm/llvm/bin/clang
+ENV CXX=/opt/rocm/llvm/bin/clang++
+
+RUN make -j$(nproc)
 
 WORKDIR /
 COPY start_program.sh /home/koboldcpp

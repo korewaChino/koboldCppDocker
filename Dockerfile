@@ -5,11 +5,10 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
 
 # Unless otherwise specified, we make a fat build.
 ARG CUDA_DOCKER_ARCH=all
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common 
-RUN add-apt-repository -y ppa:cnugteren/clblast && apt-get update
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
   sudo \
   libelf1 \
   libnuma-dev \
@@ -50,7 +49,7 @@ ENV CUDA_DOCKER_ARCH=${CUDA_DOCKER_ARCH}
 ENV LLAMA_CUBLAS=1
 ENV LLAMA_OPENBLAS=1
 ENV LLAMA_CUBLAS=1
-ENV LLAMA_CLBLAST=1
+ENV LLAMA_CLBLAST=0
 RUN make -j$(nproc)
 
 WORKDIR /

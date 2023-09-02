@@ -25,7 +25,6 @@ ARG ROCM_DOCKER_ARCH=\
 FROM ${BASE_ROCM_DEV_CONTAINER}
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common
-RUN add-apt-repository -y ppa:cnugteren/clblast -y && apt-get update
 RUN apt-get install -y --no-install-recommends \
   sudo \
   libelf1 \
@@ -60,7 +59,7 @@ WORKDIR /home/koboldcpp
 RUN pip install -r requirements.txt
 
 ENV LLAMA_OPENBLAS=1
-ENV LLAMA_CLBLAST=1
+ENV LLAMA_CLBLAST=0
 ENV LLAMA_HIPBLAS=1
 ENV CC=/opt/rocm/llvm/bin/clang
 ENV CXX=/opt/rocm/llvm/bin/clang++

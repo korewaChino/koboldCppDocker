@@ -55,3 +55,4 @@ jobs:
            korewachino/koboldcpp:nocuda
            korewachino/koboldcpp:1.42.1-rocm
            korewachino/koboldcpp:1.42.1-nocuda
+           korewachino/koboldcpp:rocm

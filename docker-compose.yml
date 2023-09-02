@@ -16,7 +16,7 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-    image: korewachino/koboldcpp
+    image: korewachino/koboldcpp:cuda
     container_name: koboldcpp
     working_dir: /home/koboldcpp
     build:
@@ -26,7 +26,7 @@ services:
     ports:
       - "5001:5001"
     volumes:
-      - "/home/cappy/Documents/ai_workspace/koboldcpp/models:/models"
+      - "$PWD/models:/models"
       - "$PWD/config:/config"
     env_file:
       - .env

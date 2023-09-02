@@ -20,4 +20,6 @@ fi
 nvidia-smi
 echo "CARGS: $CARGS"
 
+ls -l /config
+
 ./koboldcpp.py $CARGS

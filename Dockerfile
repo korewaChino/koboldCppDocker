@@ -42,7 +42,7 @@ COPY ./koboldcpp ./home/koboldcpp
 WORKDIR /home/koboldcpp
 
 RUN pip install --upgrade pip setuptools wheel \
-    && pip install -r requirements.txt
+  && pip install -r requirements.txt
 
 # You need this environment variable to make sure that the CUDA architecture works for all GPUs
 ENV CUDA_DOCKER_ARCH=${CUDA_DOCKER_ARCH}

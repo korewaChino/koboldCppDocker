@@ -3,56 +3,49 @@ name: Build and Push
 on:
   push:
     branches:
-      - 'main'
+      - "main"
 
 jobs:
   docker-cuda:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      -
-        name: Login to Docker Hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Build and push
+      - name: Build and push
         uses: docker/build-push-action@v4
         with:
           push: true
           tags: |
-           korewachino/koboldcpp:latest
-           korewachino/koboldcpp:1.42.1
-           korewachino/koboldcpp:cuda
+            korewachino/koboldcpp:latest
+            korewachino/koboldcpp:1.43
+            korewachino/koboldcpp:cuda
   docker-nocuda:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      -
-        name: Login to Docker Hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Build and push
+      - name: Build and push
         uses: docker/build-push-action@v4
         with:
           file: nocuda.dockerfile
           push: true
           tags: |
-           korewachino/koboldcpp:nocuda
-           korewachino/koboldcpp:1.42.1-rocm
-           korewachino/koboldcpp:1.42.1-nocuda
-           korewachino/koboldcpp:rocm
+            korewachino/koboldcpp:nocuda
+            korewachino/koboldcpp:1.43-rocm
+            korewachino/koboldcpp:1.43-nocuda
+            korewachino/koboldcpp:rocm
+

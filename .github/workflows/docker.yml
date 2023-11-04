@@ -5,6 +5,9 @@ on:
     branches:
       - "main"
 
+env:
+  VERSION: 1.48
+
 jobs:
   docker-cuda:
     runs-on: ubuntu-latest
@@ -24,7 +27,7 @@ jobs:
           push: true
           tags: |
             korewachino/koboldcpp:latest
-            korewachino/koboldcpp:1.43
+            korewachino/koboldcpp:${{ env.VERSION }}
             korewachino/koboldcpp:cuda
   docker-nocuda:
     runs-on: ubuntu-latest
@@ -45,7 +48,7 @@ jobs:
           push: true
           tags: |
             korewachino/koboldcpp:nocuda
-            korewachino/koboldcpp:1.43-rocm
-            korewachino/koboldcpp:1.43-nocuda
+            korewachino/koboldcpp:${{ env.VERSION }}-rocm
+            korewachino/koboldcpp:${{ env.VERSION }}-nocuda
             korewachino/koboldcpp:rocm
 

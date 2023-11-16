@@ -5,6 +5,7 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu${UBUNTU_VERSION}
 
 # Unless otherwise specified, we make a fat build.
 ARG CUDA_DOCKER_ARCH=all
+ENV LLAMA_PORTABLE=1
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common 
